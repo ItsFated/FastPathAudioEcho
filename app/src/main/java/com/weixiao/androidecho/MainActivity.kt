@@ -19,12 +19,9 @@ class MainActivity : AppCompatActivity() {
     private var playState: Boolean = false
         set(value) {
             field = value
-            if(value)
-            {
+            if (value) {
                 binding.btnStart.text = "Stop"
-            }
-            else
-            {
+            } else {
                 binding.btnStart.text = "Start"
             }
         }
@@ -50,30 +47,31 @@ class MainActivity : AppCompatActivity() {
         // 使用 binding.root 替代原来的 setContentView(R.layout.activity_main)
         setContentView(binding.root)
 
-        PermissionX.init(this).permissions(Manifest.permission.RECORD_AUDIO).request{
-                allGranted, grantedList, deniedList ->
+        PermissionX.init(this).permissions(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS
+        ).request { allGranted, grantedList, deniedList ->
             if (allGranted) {
                 //Toast.makeText(this, "All permissions are granted", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG)
+                    .show()
             }
         }
 
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         sampleRate = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE).toInt()
-        framesPerBuffer = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER).toInt()
+        framesPerBuffer =
+            audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER).toInt()
 
 
         playState = false
 
-        nInit(sampleRate, framesPerBuffer, 3)
-        binding.btnStart.setOnClickListener{
-            if(playState)
-            {
+        nInit(sampleRate, framesPerBuffer, 0)
+        binding.btnStart.setOnClickListener {
+            if (playState) {
                 nStop()
-            }
-            else
-            {
+            } else {
 //                val tempApi = when{
 //                    rb_sl.isChecked -> 0
 //                    rb_aaudio.isChecked -> 1
